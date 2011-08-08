@@ -1,0 +1,5 @@
+--remap flash:jeash
+-cp src
+-lib jeash
+-main SecretProject
+-js deploy/out.js
