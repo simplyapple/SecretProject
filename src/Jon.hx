@@ -33,7 +33,7 @@ class Jon extends Sprite
     #end
     
     x = 6*SP.grid_w;// 7-1x6-1
-    y = 5*SP.grid_h;
+    y = 7*SP.grid_h;
     
 /*    new GTween(bitmap, 2, {x : 100});*/
   }

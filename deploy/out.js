@@ -5154,7 +5154,7 @@ SecretProject = function(p) { if( p === $_ ) return; {
 		this.world = new World(this);
 		this.GetStage().addChild(this.world);
 	}
-	this.GetStage().addEventListener(jeash.events.MouseEvent.CLICK,$closure(this,"world_click"));
+	this.GetStage().addEventListener(jeash.events.MouseEvent.CLICK,$closure(this,"stage_click"));
 }}
 SecretProject.__name__ = ["SecretProject"];
 SecretProject.__super__ = jeash.display.Sprite;
@@ -5170,11 +5170,15 @@ SecretProject.prototype.load_world = function() {
 }
 SecretProject.prototype.load_jon = function() {
 	this.jon = new Jon(this);
-	this.GetStage().addChild(this.jon);
+	this.world.addChild(this.jon);
 }
-SecretProject.prototype.world_click = function(e) {
+SecretProject.prototype.stage_click = function(e) {
 	com.gskinner.motion.GTween.patchTick(this.jon);
-	new com.gskinner.motion.GTween(this.jon,2,{ x : 300});
+	com.gskinner.motion.GTween.patchTick(this.world);
+	haxe.Log.trace(e.localX + " : " + e.localY,{ fileName : "SecretProject.hx", lineNumber : 49, className : "SecretProject", methodName : "stage_click"});
+	var new_x = Math.floor((e.localX - this.world.jeashGetX()) / 50) * 50;
+	var new_y = Math.floor((e.localY - this.world.jeashGetY()) / 50) * 50;
+	new com.gskinner.motion.GTween(this.jon,1,{ x : new_x, y : new_y});
 }
 SecretProject.prototype.__class__ = SecretProject;
 StringBuf = function(p) { if( p === $_ ) return; {
@@ -6554,7 +6558,7 @@ Jon.prototype.jon_loader_complete = function(e) {
 	this.addChild(bitmap);
 	com.gskinner.motion.GTween.patchTick(bitmap);
 	this.jeashSetX(300);
-	this.jeashSetY(250);
+	this.jeashSetY(350);
 }
 Jon.prototype.__class__ = Jon;
 if(!jeash.accessibility) jeash.accessibility = {}

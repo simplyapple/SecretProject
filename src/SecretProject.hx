@@ -23,7 +23,7 @@ class SecretProject extends Sprite
     
     load_world();
     
-    stage.addEventListener(MouseEvent.CLICK, world_click);
+    stage.addEventListener(MouseEvent.CLICK, stage_click);
   }
   private inline function load_world(  ):Void
   {
@@ -33,19 +33,26 @@ class SecretProject extends Sprite
   public inline function load_jon(  ):Void
   {
     jon = new Jon(this);
-    stage.addChild(jon);
+    world.addChild(jon);
   }
   
-  private inline function world_click( e:MouseEvent ):Void
+  private inline function stage_click( e:MouseEvent ):Void
   {
 /*    trace(e.localX + " : " + e.localY);*/
     
     #if js
     	GTween.patchTick(jon);
+    	GTween.patchTick(world);
     #end
     		
-    new GTween(jon, 2, {x : 300});
-    
+/*    new GTween(jon, 2, {x : 300});*/
+/*    trace(e.localX + " : " + e.localY);*/
+/*    trace( + " : " + Math.floor(e.localY/SP.grid_h));*/
+/*    var world_x = Math.floor(/SP.grid_w)*SP.grid_w;*/
+/*    var world_y = Math.floor(world.y/SP.grid_h)*SP.grid_h;*/
+    var new_x = Math.floor((e.localX-world.x)/SP.grid_w) * SP.grid_w;
+    var new_y = Math.floor((e.localY-world.y)/SP.grid_h) * SP.grid_h;
+    new GTween(jon, 1, {x: new_x, y: new_y}); 
   }
   
   
