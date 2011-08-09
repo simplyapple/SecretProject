@@ -1,6 +1,9 @@
---remap flash:jeash
+#--remap flash:jeash
 -cp src
--lib jeash
+#-lib jeash
 -lib GTweenHX
 -main SecretProject
--js deploy/out.js
+#-js deploy/out.js
+-swf-version 10
+-swf-header 650:550:40:FFFFFF
+-swf deploy/debug.swf

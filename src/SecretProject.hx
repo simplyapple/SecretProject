@@ -20,9 +20,10 @@ class SecretProject extends Sprite
   public function new ()
   {
     super();
-    
+    Lib.current.stage.addChild(this);
+
     load_world();
-    
+
     stage.addEventListener(MouseEvent.CLICK, stage_click);
   }
   private inline function load_world(  ):Void
