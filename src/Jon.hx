@@ -12,12 +12,14 @@ import com.gskinner.motion.plugins.jeash.JeashDisplayObjectPlugin;
 
 class Jon extends Sprite
 {
-  public function new(  )
+  private var s: SecretProject;
+  public function new( s:SecretProject )
   {
+    this.s = s;
     super();
     var jon_loader:Loader = new Loader();
     jon_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, jon_loader_complete);
-    jon_loader.load(new URLRequest("images/game/jon.png"));
+    jon_loader.load(new URLRequest("images/game/jon.gif"));
   }
   
   private inline function jon_loader_complete( e:Event ):Void
@@ -29,8 +31,11 @@ class Jon extends Sprite
     #if js
     	GTween.patchTick(bitmap);
     #end
-    		
-    new GTween(bitmap, 2, {x : 100});
+    
+    x = 6*SP.grid_w;// 7-1x6-1
+    y = 5*SP.grid_h;
+    
+/*    new GTween(bitmap, 2, {x : 100});*/
   }
   
 }

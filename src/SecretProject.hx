@@ -13,15 +13,39 @@ import com.gskinner.motion.plugins.jeash.JeashDisplayObjectPlugin;
 
 class SecretProject extends Sprite
 {
+  
+  public var world:World;
+  public var jon:Jon;
+  
   public function new ()
   {
     super();
     
-    var world = new World();
-    stage.addChild(world);
+    load_world();
     
-    var jon = new Jon();
+    stage.addEventListener(MouseEvent.CLICK, world_click);
+  }
+  private inline function load_world(  ):Void
+  {
+    world = new World(this);
+    stage.addChild(world);
+  }
+  public inline function load_jon(  ):Void
+  {
+    jon = new Jon(this);
     stage.addChild(jon);
+  }
+  
+  private inline function world_click( e:MouseEvent ):Void
+  {
+/*    trace(e.localX + " : " + e.localY);*/
+    
+    #if js
+    	GTween.patchTick(jon);
+    #end
+    		
+    new GTween(jon, 2, {x : 300});
+    
   }
   
   

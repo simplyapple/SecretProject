@@ -2288,6 +2288,9 @@ haxe.io.Bytes.prototype.getData = function() {
 	return this.b;
 }
 haxe.io.Bytes.prototype.__class__ = haxe.io.Bytes;
+SP = function() { }
+SP.__name__ = ["SP"];
+SP.prototype.__class__ = SP;
 jeash.geom.Decompose = function() { }
 jeash.geom.Decompose.__name__ = ["jeash","geom","Decompose"];
 jeash.geom.Decompose.calcFromValues = function(r1,m1,r2,m2) {
@@ -5147,16 +5150,31 @@ jeash.display.Sprite.prototype.jeashSetUseHandCursor = function(cursor) {
 jeash.display.Sprite.prototype.__class__ = jeash.display.Sprite;
 SecretProject = function(p) { if( p === $_ ) return; {
 	jeash.display.Sprite.call(this);
-	var world = new World();
-	this.GetStage().addChild(world);
-	var jon = new Jon();
-	this.GetStage().addChild(jon);
+	{
+		this.world = new World(this);
+		this.GetStage().addChild(this.world);
+	}
+	this.GetStage().addEventListener(jeash.events.MouseEvent.CLICK,$closure(this,"world_click"));
 }}
 SecretProject.__name__ = ["SecretProject"];
 SecretProject.__super__ = jeash.display.Sprite;
 for(var k in jeash.display.Sprite.prototype ) SecretProject.prototype[k] = jeash.display.Sprite.prototype[k];
 SecretProject.main = function() {
 	var m = new SecretProject();
+}
+SecretProject.prototype.world = null;
+SecretProject.prototype.jon = null;
+SecretProject.prototype.load_world = function() {
+	this.world = new World(this);
+	this.GetStage().addChild(this.world);
+}
+SecretProject.prototype.load_jon = function() {
+	this.jon = new Jon(this);
+	this.GetStage().addChild(this.jon);
+}
+SecretProject.prototype.world_click = function(e) {
+	com.gskinner.motion.GTween.patchTick(this.jon);
+	new com.gskinner.motion.GTween(this.jon,2,{ x : 300});
 }
 SecretProject.prototype.__class__ = SecretProject;
 StringBuf = function(p) { if( p === $_ ) return; {
@@ -6053,7 +6071,8 @@ haxe.Timer.prototype.run = function() {
 	null;
 }
 haxe.Timer.prototype.__class__ = haxe.Timer;
-World = function(p) { if( p === $_ ) return; {
+World = function(s) { if( s === $_ ) return; {
+	this.s = s;
 	jeash.display.Sprite.call(this);
 	var world_loader = new jeash.display.Loader();
 	world_loader.contentLoaderInfo.addEventListener(jeash.events.Event.COMPLETE,$closure(this,"world_loader_complete"));
@@ -6062,9 +6081,11 @@ World = function(p) { if( p === $_ ) return; {
 World.__name__ = ["World"];
 World.__super__ = jeash.display.Sprite;
 for(var k in jeash.display.Sprite.prototype ) World.prototype[k] = jeash.display.Sprite.prototype[k];
+World.prototype.bitmap = null;
+World.prototype.s = null;
 World.prototype.world_loader_complete = function(e) {
 	var img = e.currentTarget;
-	var bitmap = (function($this) {
+	this.bitmap = (function($this) {
 		var $r;
 		var $t = e.target.content;
 		if(Std["is"]($t,jeash.display.Bitmap)) $t;
@@ -6072,9 +6093,10 @@ World.prototype.world_loader_complete = function(e) {
 		$r = $t;
 		return $r;
 	}(this));
-	this.addChild(bitmap);
-	com.gskinner.motion.GTween.patchTick(bitmap);
-	new com.gskinner.motion.GTween(bitmap,1,{ y : 100});
+	this.addChild(this.bitmap);
+	com.gskinner.motion.GTween.patchTick(this.bitmap);
+	this.jeashSetY(-150);
+	this.s.load_jon();
 }
 World.prototype.__class__ = World;
 jeash.display.GradientType = { __ename__ : ["jeash","display","GradientType"], __constructs__ : ["RADIAL","LINEAR"] }
@@ -6508,15 +6530,17 @@ jeash.Lib.prototype.mResizePending = null;
 jeash.Lib.prototype.__scr = null;
 jeash.Lib.prototype.mArgs = null;
 jeash.Lib.prototype.__class__ = jeash.Lib;
-Jon = function(p) { if( p === $_ ) return; {
+Jon = function(s) { if( s === $_ ) return; {
+	this.s = s;
 	jeash.display.Sprite.call(this);
 	var jon_loader = new jeash.display.Loader();
 	jon_loader.contentLoaderInfo.addEventListener(jeash.events.Event.COMPLETE,$closure(this,"jon_loader_complete"));
-	jon_loader.load(new jeash.net.URLRequest("images/game/jon.png"));
+	jon_loader.load(new jeash.net.URLRequest("images/game/jon.gif"));
 }}
 Jon.__name__ = ["Jon"];
 Jon.__super__ = jeash.display.Sprite;
 for(var k in jeash.display.Sprite.prototype ) Jon.prototype[k] = jeash.display.Sprite.prototype[k];
+Jon.prototype.s = null;
 Jon.prototype.jon_loader_complete = function(e) {
 	var img = e.currentTarget;
 	var bitmap = (function($this) {
@@ -6529,7 +6553,8 @@ Jon.prototype.jon_loader_complete = function(e) {
 	}(this));
 	this.addChild(bitmap);
 	com.gskinner.motion.GTween.patchTick(bitmap);
-	new com.gskinner.motion.GTween(bitmap,2,{ x : 100});
+	this.jeashSetX(300);
+	this.jeashSetY(250);
 }
 Jon.prototype.__class__ = Jon;
 if(!jeash.accessibility) jeash.accessibility = {}
@@ -7646,6 +7671,8 @@ jeash.display.Graphics.BLEND_SHADER = 14;
 jeash.geom.MatrixUtil.INVERT = "invert";
 com.gskinner.motion.GTween.INT_MX = 2147483647;
 com.gskinner.motion.GTween.INT_MN = -2147483647;
+SP.grid_w = 50;
+SP.grid_h = 50;
 jeash.geom.Decompose.math = Math;
 jeash.display.DisplayObject.mNameID = 0;
 jeash.events.Event.ACTIVATE = "activate";

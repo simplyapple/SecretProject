@@ -12,8 +12,11 @@ import com.gskinner.motion.plugins.jeash.JeashDisplayObjectPlugin;
 
 class World extends Sprite
 {
-  public function new(  )
+  public var bitmap:Bitmap;
+  private var s: SecretProject;
+  public function new( s:SecretProject )
   {
+    this.s = s;
     super();
     var world_loader:Loader = new Loader();
     world_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, world_loader_complete);
@@ -23,14 +26,18 @@ class World extends Sprite
   private inline function world_loader_complete( e:Event ):Void
   {
     var img = e.currentTarget;
-    var bitmap = cast( e.target.content, Bitmap );
+    bitmap = cast( e.target.content, Bitmap );
     addChild( bitmap );
     
     #if js
     	GTween.patchTick(bitmap);
     #end
-    		
-    new GTween(bitmap, 1, {y : 100});
+    
+    this.y = -3*SP.grid_h;//-150; // 0x3
+
+/*    new GTween(bitmap, 1, {y : 100});*/
+    
+    s.load_jon();
   }
   
 }
