@@ -5149,6 +5149,8 @@ jeash.display.Sprite.prototype.jeashSetUseHandCursor = function(cursor) {
 }
 jeash.display.Sprite.prototype.__class__ = jeash.display.Sprite;
 SecretProject = function(p) { if( p === $_ ) return; {
+	this.clicked_x = this.GetStage().jeashGetStageWidth() / 2;
+	this.clicked_y = this.GetStage().jeashGetStageHeight() / 2;
 	jeash.display.Sprite.call(this);
 	jeash.Lib.jeashGetCurrent().GetStage().addChild(this);
 	{
@@ -5173,38 +5175,91 @@ SecretProject.prototype.rightInnerBoundary = null;
 SecretProject.prototype.leftInnerBoundary = null;
 SecretProject.prototype.topInnerBoundary = null;
 SecretProject.prototype.bottomInnerBoundary = null;
+SecretProject.prototype.clicked_x = null;
+SecretProject.prototype.clicked_y = null;
 SecretProject.prototype.load_world = function() {
 	this.world = new World(this);
 	this.GetStage().addChild(this.world);
 }
 SecretProject.prototype.load_jon = function() {
 	this.jon = new Jon(this);
-	this.world.addChild(this.jon);
+	this.GetStage().addChild(this.jon);
+	this.GetStage().addEventListener(jeash.events.Event.ENTER_FRAME,$closure(this,"loop"));
 }
-SecretProject.prototype.stage_click = function(e) {
+SecretProject.prototype.start_game_loop = function() {
+	this.GetStage().addEventListener(jeash.events.Event.ENTER_FRAME,$closure(this,"loop"));
+}
+SecretProject.prototype.loop = function(_) {
 	var playerHalfWidth = Math.round(this.jon.jeashGetWidth() / 2);
 	var playerHalfHeight = Math.round(this.jon.jeashGetHeight() / 2);
 	var backgroundHalfWidth = Math.round(this.world.jeashGetWidth() / 2);
 	var backgroundHalfHeight = Math.round(this.world.jeashGetHeight() / 2);
-	var mouse_x = e.localX;
-	var mouse_y = e.localY;
-	var clicked_grid_x = Math.floor(mouse_x / 50);
-	var clicked_grid_y = Math.floor(mouse_y / 50);
-	var jon_goes_to_x = clicked_grid_x * 50;
-	var jon_goes_to_y = clicked_grid_y * 50;
-	if(this.jon.jeashGetX() + playerHalfWidth > this.rightInnerBoundary) null;
+	var jon_vx = 0.0;
+	var jon_vy = 0.0;
+	var world_vx = 0.0;
+	var world_vy = 0.0;
+	if(this.jon.jeashGetX() + playerHalfWidth > this.rightInnerBoundary) {
+		this.jon.jeashSetX(this.rightInnerBoundary - playerHalfWidth);
+		{
+			var _g = this.world;
+			_g.jeashSetX(_g.jeashGetX() + -1.);
+		}
+	}
 	else if(this.jon.jeashGetX() - playerHalfWidth < this.leftInnerBoundary) {
-		new com.gskinner.motion.GTween(this.jon,0.5,{ x : this.GetStage().jeashGetStageWidth() - backgroundHalfWidth});
+		this.jon.jeashSetX(this.leftInnerBoundary + playerHalfWidth);
+		{
+			var _g = this.world;
+			_g.jeashSetX(_g.jeashGetX() + 1.0);
+		}
 	}
 	else if(this.jon.jeashGetY() - playerHalfHeight < this.topInnerBoundary) {
-		new com.gskinner.motion.GTween(this.jon,0.5,{ x : this.GetStage().jeashGetStageWidth() - backgroundHalfWidth});
+		this.jon.jeashSetY(this.topInnerBoundary + playerHalfHeight);
+		{
+			var _g = this.world;
+			_g.jeashSetY(_g.jeashGetY() + 1.0);
+		}
 	}
 	else if(this.jon.jeashGetY() + playerHalfHeight > this.bottomInnerBoundary) {
-		new com.gskinner.motion.GTween(this.jon,0.5,{ x : this.GetStage().jeashGetStageWidth() - backgroundHalfWidth});
+		this.jon.jeashSetY(this.bottomInnerBoundary - playerHalfHeight);
+		{
+			var _g = this.world;
+			_g.jeashSetY(_g.jeashGetY() - 1.0);
+		}
 	}
-	new com.gskinner.motion.GTween(this.jon,0.5,{ x : jon_goes_to_x, y : jon_goes_to_y});
-	com.gskinner.motion.GTween.patchTick(this.jon);
-	com.gskinner.motion.GTween.patchTick(this.world);
+	if(this.jon.jeashGetX() < this.clicked_x) {
+		jon_vx = 1.0;
+	}
+	else if(this.jon.jeashGetX() > this.clicked_x) {
+		jon_vx = -1.;
+	}
+	if(this.jon.jeashGetY() < this.clicked_y) {
+		jon_vy = 1.0;
+	}
+	else if(this.jon.jeashGetY() > this.clicked_y) {
+		jon_vy = -1.;
+	}
+	{
+		var _g = this.jon;
+		_g.jeashSetX(_g.jeashGetX() + jon_vx);
+	}
+	{
+		var _g = this.jon;
+		_g.jeashSetY(_g.jeashGetY() + jon_vy);
+	}
+	{
+		var _g = this.world;
+		_g.jeashSetX(_g.jeashGetX() + world_vx);
+	}
+	{
+		var _g = this.world;
+		_g.jeashSetY(_g.jeashGetY() + world_vy);
+	}
+}
+SecretProject.prototype.stage_click = function(e) {
+	this.clicked_x = e.stageX;
+	this.clicked_y = e.stageY;
+	var clicked_grid_x = Math.floor(this.clicked_x / 50);
+	var clicked_grid_y = Math.floor(this.clicked_y / 50);
 }
 SecretProject.prototype.__class__ = SecretProject;
 StringBuf = function(p) { if( p === $_ ) return; {
@@ -6125,7 +6180,6 @@ World.prototype.world_loader_complete = function(e) {
 	}(this));
 	this.addChild(this.bitmap);
 	com.gskinner.motion.GTween.patchTick(this.bitmap);
-	this.bitmap.jeashSetY(-150);
 	this.s.load_jon();
 }
 World.prototype.__class__ = World;
@@ -7749,7 +7803,7 @@ jeash.display.StageQuality.BEST = "best";
 jeash.display.StageQuality.HIGH = "high";
 jeash.display.StageQuality.MEDIUM = "medium";
 jeash.display.StageQuality.LOW = "low";
-SecretProject.JON_SPEED = 0.5;
+SecretProject.JON_SPEED = 1.0;
 jeash.events.KeyboardEvent.KEY_DOWN = "KEY_DOWN";
 jeash.events.KeyboardEvent.KEY_UP = "KEY_UP";
 jeash.events.FocusEvent.FOCUS_IN = "FOCUS_IN";

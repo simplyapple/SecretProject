@@ -7,9 +7,6 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.display.Loader;
 import flash.net.URLRequest;
-import com.gskinner.motion.GTween;
-import com.gskinner.motion.easing.Linear;
-import com.gskinner.motion.plugins.jeash.JeashDisplayObjectPlugin;
 
 class SecretProject extends Sprite
 {
@@ -20,11 +17,20 @@ class SecretProject extends Sprite
 	public var leftInnerBoundary:Int;
 	public var topInnerBoundary:Int;
 	public var bottomInnerBoundary:Int;
-  
-  public static inline var JON_SPEED = 0.5;
+	
+	private var clicked_x: Float;
+	private var clicked_y: Float;
+
+  public static inline var JON_SPEED = 1.0;
 
   public function new ()
   {
+    //jon.x = 0;
+    //jon.y = 0;
+    //world_dest_x = world_dest_y = 0;
+    clicked_x = stage.stageWidth / 2;
+    clicked_y = stage.stageHeight / 2;
+    
     super();
     Lib.current.stage.addChild(this);
 
@@ -45,57 +51,79 @@ class SecretProject extends Sprite
   public inline function load_jon(  ):Void
   {
     jon = new Jon(this);
-    world.addChild(jon);
+    stage.addChild(jon);
+    
+    start_game_loop();
   }
   
-  private inline function stage_click( e:MouseEvent ):Void
+  private inline function start_game_loop(  ):Void
+  {
+    stage.addEventListener(Event.ENTER_FRAME, loop);
+  }
+  
+  private inline function loop( _ ):Void
   {
     //enter frame function (kai)
 /*    trace(e.localX + " : " + e.localY);*/
     //trace(jon.width);
+    
     var playerHalfWidth = Math.round(jon.width / 2);
 		var playerHalfHeight = Math.round(jon.height / 2);
 		var backgroundHalfWidth = Math.round(world.width / 2);
 		var backgroundHalfHeight = Math.round(world.height / 2);
 		
-		// get mouse click coordinates
-		var mouse_x = e.localX;
-		var mouse_y = e.localY;
+		var jon_vx = 0.0;
+		var jon_vy = 0.0;
+		var world_vx = 0.0;
+		var world_vy = 0.0;
 		
-		// get mouse click grid coordinates
-		var clicked_grid_x = Math.floor(mouse_x/SP.grid_w);
-		var clicked_grid_y = Math.floor(mouse_y/SP.grid_h);
+  if(jon.x + playerHalfWidth > rightInnerBoundary)
+    {
+      jon.x = rightInnerBoundary - playerHalfWidth;
+      world.x += -JON_SPEED; 
+    }
+    else if(jon.x - playerHalfWidth < leftInnerBoundary)
+    {
+      jon.x = leftInnerBoundary + playerHalfWidth;
+      world.x += JON_SPEED;
+    }
+    else if(jon.y - playerHalfHeight < topInnerBoundary)
+    {
+      jon.y = topInnerBoundary + playerHalfHeight;
+      world.y += JON_SPEED;
+    }
+    else if(jon.y + playerHalfHeight > bottomInnerBoundary)
+    {
+      jon.y = bottomInnerBoundary - playerHalfHeight;
+      world.y -= JON_SPEED;
+    }
+    
+    if(jon.x < clicked_x){
+      jon_vx = JON_SPEED;
+    }else if(jon.x > clicked_x){
+      jon_vx = -JON_SPEED;
+    }
+    if(jon.y < clicked_y){
+      jon_vy = JON_SPEED;
+    }else if(jon.y > clicked_y){
+      jon_vy = -JON_SPEED;
+    }
+    
+		/*if(world.x < world_dest_x){
+      world_vx = JON_SPEED;
+    }else if(world.x > world_dest_x){
+      world_vx = -JON_SPEED;
+    }
+    if(world.y < world_dest_y){
+      world_vy = JON_SPEED;
+    }else if(world.y > world_dest_y){
+      world_vy = -JON_SPEED;
+    }*/
 		
-		
-		//keeps player in boundary
-		
-		var jon_goes_to_x = clicked_grid_x*SP.grid_w;
-		var jon_goes_to_y = clicked_grid_y*SP.grid_h;
-		
-		if(jon.x + playerHalfWidth > rightInnerBoundary)
-		{
-		  
-		}
-		else if(jon.x - playerHalfWidth < leftInnerBoundary)
-		{
-/*      jon.x = leftInnerBoundary + playerHalfWidth;*/
-			 new GTween(jon, JON_SPEED, {x: stage.stageWidth - backgroundHalfWidth});
-			//world.x += -vx;
-		}
-		else if(jon.y - playerHalfHeight < topInnerBoundary)
-		{
-/*      jon.y = topInnerBoundary + playerHalfHeight;*/
-			 new GTween(jon, JON_SPEED, {x: stage.stageWidth - backgroundHalfWidth});
-			//world.y += -vy;
-		}
-		else if(jon.y + playerHalfHeight > bottomInnerBoundary)
-		{
-/*      jon.y = bottomInnerBoundary - playerHalfHeight;*/
-			 new GTween(jon, JON_SPEED, {x: stage.stageWidth - backgroundHalfWidth});
-			//world.y += -vy;
-		}
-		
-		new GTween(jon, JON_SPEED, {x: jon_goes_to_x, y: jon_goes_to_y});
+		jon.x += jon_vx;
+		jon.y += jon_vy;
+		world.x += world_vx;
+		world.y += world_vy;
 		
 		//stop background at edges
 		/*if(world.x + backgroundHalfWidth < stage.stageWidth)
@@ -115,18 +143,21 @@ class SecretProject extends Sprite
 		      world.y = backgroundHalfHeight;
 		    }*/
     
-    #if js
-    	GTween.patchTick(jon);
-    	GTween.patchTick(world);
-    #end
-    		
-
-   // var new_x = Math.floor((e.localX-world.x)/SP.grid_w) * SP.grid_w;
-    //var new_y = Math.floor((e.localY-world.y)/SP.grid_h) * SP.grid_h;
-    //new GTween(jon, JON_SPEED, {x: new_x, y: new_y});
-    
   }
-  
+  private inline function stage_click( e:MouseEvent ):Void
+  {
+    // get mouse click coordinates
+		clicked_x = e.stageX;
+		clicked_y = e.stageY;
+		
+/*    trace(clicked_x + " : " + clicked_y);*/
+
+		// get mouse click grid coordinates
+		var clicked_grid_x = Math.floor(clicked_x/SP.grid_w);
+		var clicked_grid_y = Math.floor(clicked_y/SP.grid_h);
+		
+		
+  }
   
   public static function main(): Void
   {
