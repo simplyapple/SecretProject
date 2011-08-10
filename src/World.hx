@@ -33,10 +33,10 @@ class World extends Sprite
     	GTween.patchTick(bitmap);
     #end
     
-    this.y = -3*SP.grid_h;//-150; // 0x3
+    bitmap.y = -3*SP.grid_h;//-150; // 0x3
 
 /*    new GTween(bitmap, 1, {y : 100});*/
-    
+
     s.load_jon();
   }
   

@@ -5150,10 +5150,15 @@ jeash.display.Sprite.prototype.jeashSetUseHandCursor = function(cursor) {
 jeash.display.Sprite.prototype.__class__ = jeash.display.Sprite;
 SecretProject = function(p) { if( p === $_ ) return; {
 	jeash.display.Sprite.call(this);
+	jeash.Lib.jeashGetCurrent().GetStage().addChild(this);
 	{
 		this.world = new World(this);
 		this.GetStage().addChild(this.world);
 	}
+	this.rightInnerBoundary = Math.round(this.GetStage().jeashGetStageWidth() / 2 + this.GetStage().jeashGetStageWidth() / 4);
+	this.leftInnerBoundary = Math.round(this.GetStage().jeashGetStageWidth() / 2 - this.GetStage().jeashGetStageWidth() / 4);
+	this.topInnerBoundary = Math.round(this.GetStage().jeashGetStageHeight() / 2 - this.GetStage().jeashGetStageHeight() / 4);
+	this.bottomInnerBoundary = Math.round(this.GetStage().jeashGetStageHeight() / 2 + this.GetStage().jeashGetStageHeight() / 4);
 	this.GetStage().addEventListener(jeash.events.MouseEvent.CLICK,$closure(this,"stage_click"));
 }}
 SecretProject.__name__ = ["SecretProject"];
@@ -5164,6 +5169,10 @@ SecretProject.main = function() {
 }
 SecretProject.prototype.world = null;
 SecretProject.prototype.jon = null;
+SecretProject.prototype.rightInnerBoundary = null;
+SecretProject.prototype.leftInnerBoundary = null;
+SecretProject.prototype.topInnerBoundary = null;
+SecretProject.prototype.bottomInnerBoundary = null;
 SecretProject.prototype.load_world = function() {
 	this.world = new World(this);
 	this.GetStage().addChild(this.world);
@@ -5173,12 +5182,29 @@ SecretProject.prototype.load_jon = function() {
 	this.world.addChild(this.jon);
 }
 SecretProject.prototype.stage_click = function(e) {
+	var playerHalfWidth = Math.round(this.jon.jeashGetWidth() / 2);
+	var playerHalfHeight = Math.round(this.jon.jeashGetHeight() / 2);
+	var backgroundHalfWidth = Math.round(this.world.jeashGetWidth() / 2);
+	var backgroundHalfHeight = Math.round(this.world.jeashGetHeight() / 2);
+	var mouse_x = e.localX;
+	var mouse_y = e.localY;
+	var clicked_grid_x = Math.floor(mouse_x / 50);
+	var clicked_grid_y = Math.floor(mouse_y / 50);
+	var jon_goes_to_x = clicked_grid_x * 50;
+	var jon_goes_to_y = clicked_grid_y * 50;
+	if(this.jon.jeashGetX() + playerHalfWidth > this.rightInnerBoundary) null;
+	else if(this.jon.jeashGetX() - playerHalfWidth < this.leftInnerBoundary) {
+		new com.gskinner.motion.GTween(this.jon,0.5,{ x : this.GetStage().jeashGetStageWidth() - backgroundHalfWidth});
+	}
+	else if(this.jon.jeashGetY() - playerHalfHeight < this.topInnerBoundary) {
+		new com.gskinner.motion.GTween(this.jon,0.5,{ x : this.GetStage().jeashGetStageWidth() - backgroundHalfWidth});
+	}
+	else if(this.jon.jeashGetY() + playerHalfHeight > this.bottomInnerBoundary) {
+		new com.gskinner.motion.GTween(this.jon,0.5,{ x : this.GetStage().jeashGetStageWidth() - backgroundHalfWidth});
+	}
+	new com.gskinner.motion.GTween(this.jon,0.5,{ x : jon_goes_to_x, y : jon_goes_to_y});
 	com.gskinner.motion.GTween.patchTick(this.jon);
 	com.gskinner.motion.GTween.patchTick(this.world);
-	haxe.Log.trace(e.localX + " : " + e.localY,{ fileName : "SecretProject.hx", lineNumber : 49, className : "SecretProject", methodName : "stage_click"});
-	var new_x = Math.floor((e.localX - this.world.jeashGetX()) / 50) * 50;
-	var new_y = Math.floor((e.localY - this.world.jeashGetY()) / 50) * 50;
-	new com.gskinner.motion.GTween(this.jon,1,{ x : new_x, y : new_y});
 }
 SecretProject.prototype.__class__ = SecretProject;
 StringBuf = function(p) { if( p === $_ ) return; {
@@ -6099,7 +6125,7 @@ World.prototype.world_loader_complete = function(e) {
 	}(this));
 	this.addChild(this.bitmap);
 	com.gskinner.motion.GTween.patchTick(this.bitmap);
-	this.jeashSetY(-150);
+	this.bitmap.jeashSetY(-150);
 	this.s.load_jon();
 }
 World.prototype.__class__ = World;
@@ -7723,6 +7749,7 @@ jeash.display.StageQuality.BEST = "best";
 jeash.display.StageQuality.HIGH = "high";
 jeash.display.StageQuality.MEDIUM = "medium";
 jeash.display.StageQuality.LOW = "low";
+SecretProject.JON_SPEED = 0.5;
 jeash.events.KeyboardEvent.KEY_DOWN = "KEY_DOWN";
 jeash.events.KeyboardEvent.KEY_UP = "KEY_UP";
 jeash.events.FocusEvent.FOCUS_IN = "FOCUS_IN";
