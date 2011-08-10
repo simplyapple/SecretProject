@@ -36,10 +36,10 @@ class SecretProject extends Sprite
 
     load_world();
     
-    rightInnerBoundary = Math.round((stage.stageWidth / 2) + (stage.stageWidth /4));
-		leftInnerBoundary = Math.round((stage.stageWidth /2) - (stage.stageWidth /4));
-		topInnerBoundary = Math.round((stage.stageHeight /2) - (stage.stageHeight / 4));
-		bottomInnerBoundary = Math.round((stage.stageHeight /2) + (stage.stageHeight / 4));
+    rightInnerBoundary = Math.round((stage.stageWidth / 2) + (stage.stageWidth / 4));
+		leftInnerBoundary = Math.round((stage.stageWidth / 2) - (stage.stageWidth / 4));
+		topInnerBoundary = Math.round((stage.stageHeight / 2) - (stage.stageHeight / 4));
+		bottomInnerBoundary = Math.round((stage.stageHeight / 2) + (stage.stageHeight / 4));
 
     stage.addEventListener(MouseEvent.CLICK, stage_click);
   }
@@ -66,32 +66,32 @@ class SecretProject extends Sprite
     //enter frame function (kai)
 /*    trace(e.localX + " : " + e.localY);*/
     
-    var playerHalfWidth = Math.round(jon.width / 2);
-		var playerHalfHeight = Math.round(jon.height / 2);
+    //var jon.height = Math.round(jon.width / 2);
+		//var jon.height = Math.round(jon.height / 2);
 		
 		var jon_vx = 0.0;
 		var jon_vy = 0.0;
 		var world_vx = 0.0;
 		var world_vy = 0.0;
 		
-    if(jon.x + playerHalfWidth > rightInnerBoundary)
+    if(jon.x + jon.width > rightInnerBoundary)
     {
-      jon.x = rightInnerBoundary - playerHalfWidth;
+      jon.x = rightInnerBoundary - jon.width;
       world.x += -JON_SPEED;
     }
-    else if(jon.x - playerHalfWidth < leftInnerBoundary)
+    else if(jon.x - jon.width < leftInnerBoundary)
     {
-      jon.x = leftInnerBoundary + playerHalfWidth;
+      jon.x = leftInnerBoundary + jon.width;
       world.x += JON_SPEED;
     }
-    else if(jon.y - playerHalfHeight < topInnerBoundary)
+    else if(jon.y - jon.height < topInnerBoundary)
     {
-      jon.y = topInnerBoundary + playerHalfHeight;
+      jon.y = topInnerBoundary + jon.height;
       world.y += JON_SPEED;
     }
-    else if(jon.y + playerHalfHeight > bottomInnerBoundary)
+    else if(jon.y + jon.height > bottomInnerBoundary)
     {
-      jon.y = bottomInnerBoundary - playerHalfHeight;
+      jon.y = bottomInnerBoundary - jon.height;
       world.y -= JON_SPEED;
     }
     
@@ -126,22 +126,22 @@ class SecretProject extends Sprite
 		    if (world.x > 0)
 		    {
 		      world.x = 0;
-		      leftInnerBoundary = 0 - playerHalfWidth; 
+		      leftInnerBoundary = 0 - Math.round(jon.width); 
 		    }
 		    else if(world.y > 0)
 		    {
 		      world.y = 0;
-		      topInnerBoundary = 0 - playerHalfHeight;
+		      topInnerBoundary = 0 - Math.round(jon.height);
 		    }
 		    else if(world.x + world.width < stage.stageWidth)
 		    {
-		      world.x = stage.stageWidth -world.width;
-		      rightInnerBoundary = stage.stageWidth - playerHalfWidth; 
+		      world.x = stage.stageWidth - world.width;
+		      rightInnerBoundary = stage.stageWidth;// + jon.width; 
 		    }
-		    if(world.y + world.height < stage.stageHeight)
+		    else if(world.y + world.height < stage.stageHeight)
 		    { 
 		      world.y = stage.stageHeight - world.height;
-		      bottomInnerBoundary = stage.stageHeight - playerHalfHeight; 
+		      bottomInnerBoundary = stage.stageHeight;// + Math.round(jon.height); 
 		    }
     
   }

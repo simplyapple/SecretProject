@@ -5190,35 +5190,33 @@ SecretProject.prototype.start_game_loop = function() {
 	this.GetStage().addEventListener(jeash.events.Event.ENTER_FRAME,$closure(this,"loop"));
 }
 SecretProject.prototype.loop = function(_) {
-	var playerHalfWidth = Math.round(this.jon.jeashGetWidth() / 2);
-	var playerHalfHeight = Math.round(this.jon.jeashGetHeight() / 2);
 	var jon_vx = 0.0;
 	var jon_vy = 0.0;
 	var world_vx = 0.0;
 	var world_vy = 0.0;
-	if(this.jon.jeashGetX() + playerHalfWidth > this.rightInnerBoundary) {
-		this.jon.jeashSetX(this.rightInnerBoundary - playerHalfWidth);
+	if(this.jon.jeashGetX() + this.jon.jeashGetWidth() > this.rightInnerBoundary) {
+		this.jon.jeashSetX(this.rightInnerBoundary - this.jon.jeashGetWidth());
 		{
 			var _g = this.world;
 			_g.jeashSetX(_g.jeashGetX() + -3.);
 		}
 	}
-	else if(this.jon.jeashGetX() - playerHalfWidth < this.leftInnerBoundary) {
-		this.jon.jeashSetX(this.leftInnerBoundary + playerHalfWidth);
+	else if(this.jon.jeashGetX() - this.jon.jeashGetWidth() < this.leftInnerBoundary) {
+		this.jon.jeashSetX(this.leftInnerBoundary + this.jon.jeashGetWidth());
 		{
 			var _g = this.world;
 			_g.jeashSetX(_g.jeashGetX() + 3.0);
 		}
 	}
-	else if(this.jon.jeashGetY() - playerHalfHeight < this.topInnerBoundary) {
-		this.jon.jeashSetY(this.topInnerBoundary + playerHalfHeight);
+	else if(this.jon.jeashGetY() - this.jon.jeashGetHeight() < this.topInnerBoundary) {
+		this.jon.jeashSetY(this.topInnerBoundary + this.jon.jeashGetHeight());
 		{
 			var _g = this.world;
 			_g.jeashSetY(_g.jeashGetY() + 3.0);
 		}
 	}
-	else if(this.jon.jeashGetY() + playerHalfHeight > this.bottomInnerBoundary) {
-		this.jon.jeashSetY(this.bottomInnerBoundary - playerHalfHeight);
+	else if(this.jon.jeashGetY() + this.jon.jeashGetHeight() > this.bottomInnerBoundary) {
+		this.jon.jeashSetY(this.bottomInnerBoundary - this.jon.jeashGetHeight());
 		{
 			var _g = this.world;
 			_g.jeashSetY(_g.jeashGetY() - 3.0);
@@ -5254,19 +5252,19 @@ SecretProject.prototype.loop = function(_) {
 	}
 	if(this.world.jeashGetX() > 0) {
 		this.world.jeashSetX(0);
-		this.leftInnerBoundary = 0 - playerHalfWidth;
+		this.leftInnerBoundary = 0 - Math.round(this.jon.jeashGetWidth());
 	}
 	else if(this.world.jeashGetY() > 0) {
 		this.world.jeashSetY(0);
-		this.topInnerBoundary = 0 - playerHalfHeight;
+		this.topInnerBoundary = 0 - Math.round(this.jon.jeashGetHeight());
 	}
 	else if(this.world.jeashGetX() + this.world.jeashGetWidth() < this.GetStage().jeashGetStageWidth()) {
 		this.world.jeashSetX(this.GetStage().jeashGetStageWidth() - this.world.jeashGetWidth());
-		this.rightInnerBoundary = this.GetStage().jeashGetStageWidth() - playerHalfWidth;
+		this.rightInnerBoundary = this.GetStage().jeashGetStageWidth();
 	}
-	if(this.world.jeashGetY() + this.world.jeashGetHeight() < this.GetStage().jeashGetStageHeight()) {
+	else if(this.world.jeashGetY() + this.world.jeashGetHeight() < this.GetStage().jeashGetStageHeight()) {
 		this.world.jeashSetY(this.GetStage().jeashGetStageHeight() - this.world.jeashGetHeight());
-		this.bottomInnerBoundary = this.GetStage().jeashGetStageHeight() - playerHalfHeight;
+		this.bottomInnerBoundary = this.GetStage().jeashGetStageHeight();
 	}
 }
 SecretProject.prototype.stage_click = function(e) {
