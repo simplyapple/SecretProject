@@ -5192,8 +5192,6 @@ SecretProject.prototype.start_game_loop = function() {
 SecretProject.prototype.loop = function(_) {
 	var playerHalfWidth = Math.round(this.jon.jeashGetWidth() / 2);
 	var playerHalfHeight = Math.round(this.jon.jeashGetHeight() / 2);
-	var backgroundHalfWidth = Math.round(this.world.jeashGetWidth() / 2);
-	var backgroundHalfHeight = Math.round(this.world.jeashGetHeight() / 2);
 	var jon_vx = 0.0;
 	var jon_vy = 0.0;
 	var world_vx = 0.0;
@@ -5202,41 +5200,41 @@ SecretProject.prototype.loop = function(_) {
 		this.jon.jeashSetX(this.rightInnerBoundary - playerHalfWidth);
 		{
 			var _g = this.world;
-			_g.jeashSetX(_g.jeashGetX() + -1.);
+			_g.jeashSetX(_g.jeashGetX() + -3.);
 		}
 	}
 	else if(this.jon.jeashGetX() - playerHalfWidth < this.leftInnerBoundary) {
 		this.jon.jeashSetX(this.leftInnerBoundary + playerHalfWidth);
 		{
 			var _g = this.world;
-			_g.jeashSetX(_g.jeashGetX() + 1.0);
+			_g.jeashSetX(_g.jeashGetX() + 3.0);
 		}
 	}
 	else if(this.jon.jeashGetY() - playerHalfHeight < this.topInnerBoundary) {
 		this.jon.jeashSetY(this.topInnerBoundary + playerHalfHeight);
 		{
 			var _g = this.world;
-			_g.jeashSetY(_g.jeashGetY() + 1.0);
+			_g.jeashSetY(_g.jeashGetY() + 3.0);
 		}
 	}
 	else if(this.jon.jeashGetY() + playerHalfHeight > this.bottomInnerBoundary) {
 		this.jon.jeashSetY(this.bottomInnerBoundary - playerHalfHeight);
 		{
 			var _g = this.world;
-			_g.jeashSetY(_g.jeashGetY() - 1.0);
+			_g.jeashSetY(_g.jeashGetY() - 3.0);
 		}
 	}
 	if(this.jon.jeashGetX() < this.clicked_x) {
-		jon_vx = 1.0;
+		jon_vx = 3.0;
 	}
 	else if(this.jon.jeashGetX() > this.clicked_x) {
-		jon_vx = -1.;
+		jon_vx = -3.;
 	}
 	if(this.jon.jeashGetY() < this.clicked_y) {
-		jon_vy = 1.0;
+		jon_vy = 3.0;
 	}
 	else if(this.jon.jeashGetY() > this.clicked_y) {
-		jon_vy = -1.;
+		jon_vy = -3.;
 	}
 	{
 		var _g = this.jon;
@@ -5253,6 +5251,22 @@ SecretProject.prototype.loop = function(_) {
 	{
 		var _g = this.world;
 		_g.jeashSetY(_g.jeashGetY() + world_vy);
+	}
+	if(this.world.jeashGetX() > 0) {
+		this.world.jeashSetX(0);
+		this.leftInnerBoundary = 0 - playerHalfWidth;
+	}
+	else if(this.world.jeashGetY() > 0) {
+		this.world.jeashSetY(0);
+		this.topInnerBoundary = 0 - playerHalfHeight;
+	}
+	else if(this.world.jeashGetX() + this.world.jeashGetWidth() < this.GetStage().jeashGetStageWidth()) {
+		this.world.jeashSetX(this.GetStage().jeashGetStageWidth() - this.world.jeashGetWidth());
+		this.rightInnerBoundary = this.GetStage().jeashGetStageWidth() - playerHalfWidth;
+	}
+	if(this.world.jeashGetY() + this.world.jeashGetHeight() < this.GetStage().jeashGetStageHeight()) {
+		this.world.jeashSetY(this.GetStage().jeashGetStageHeight() - this.world.jeashGetHeight());
+		this.bottomInnerBoundary = this.GetStage().jeashGetStageHeight() - playerHalfHeight;
 	}
 }
 SecretProject.prototype.stage_click = function(e) {
@@ -7803,7 +7817,7 @@ jeash.display.StageQuality.BEST = "best";
 jeash.display.StageQuality.HIGH = "high";
 jeash.display.StageQuality.MEDIUM = "medium";
 jeash.display.StageQuality.LOW = "low";
-SecretProject.JON_SPEED = 1.0;
+SecretProject.JON_SPEED = 3.0;
 jeash.events.KeyboardEvent.KEY_DOWN = "KEY_DOWN";
 jeash.events.KeyboardEvent.KEY_UP = "KEY_UP";
 jeash.events.FocusEvent.FOCUS_IN = "FOCUS_IN";

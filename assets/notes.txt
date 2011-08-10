@@ -18,3 +18,11 @@
     start 0x3
     
     150
+
+
+-1800 + 1800 < 650
+
+
+
+background.x + backgroundHalfwidth < stage.stagewidth
+-1800 + 900 < 

@@ -21,7 +21,7 @@ class SecretProject extends Sprite
 	private var clicked_x: Float;
 	private var clicked_y: Float;
 
-  public static inline var JON_SPEED = 1.0;
+  public static inline var JON_SPEED = 3.0;
 
   public function new ()
   {
@@ -65,22 +65,19 @@ class SecretProject extends Sprite
   {
     //enter frame function (kai)
 /*    trace(e.localX + " : " + e.localY);*/
-    //trace(jon.width);
     
     var playerHalfWidth = Math.round(jon.width / 2);
 		var playerHalfHeight = Math.round(jon.height / 2);
-		var backgroundHalfWidth = Math.round(world.width / 2);
-		var backgroundHalfHeight = Math.round(world.height / 2);
 		
 		var jon_vx = 0.0;
 		var jon_vy = 0.0;
 		var world_vx = 0.0;
 		var world_vy = 0.0;
 		
-  if(jon.x + playerHalfWidth > rightInnerBoundary)
+    if(jon.x + playerHalfWidth > rightInnerBoundary)
     {
       jon.x = rightInnerBoundary - playerHalfWidth;
-      world.x += -JON_SPEED; 
+      world.x += -JON_SPEED;
     }
     else if(jon.x - playerHalfWidth < leftInnerBoundary)
     {
@@ -126,22 +123,26 @@ class SecretProject extends Sprite
 		world.y += world_vy;
 		
 		//stop background at edges
-		/*if(world.x + backgroundHalfWidth < stage.stageWidth)
+		    if (world.x > 0)
 		    {
-		      world.x = stage.stageWidth - backgroundHalfWidth;
+		      world.x = 0;
+		      leftInnerBoundary = 0 - playerHalfWidth; 
 		    }
-		    else if(world.y + backgroundHalfHeight < stage.stageHeight)
+		    else if(world.y > 0)
 		    {
-		      world.y = stage.stageHeight - backgroundHalfHeight;
+		      world.y = 0;
+		      topInnerBoundary = 0 - playerHalfHeight;
 		    }
-		    else if(world.x - backgroundHalfWidth > 0)
+		    else if(world.x + world.width < stage.stageWidth)
 		    {
-		      world.x = backgroundHalfWidth;
+		      world.x = stage.stageWidth -world.width;
+		      rightInnerBoundary = stage.stageWidth - playerHalfWidth; 
 		    }
-		    else if(world.y - backgroundHalfHeight > 0)
-		    {
-		      world.y = backgroundHalfHeight;
-		    }*/
+		    if(world.y + world.height < stage.stageHeight)
+		    { 
+		      world.y = stage.stageHeight - world.height;
+		      bottomInnerBoundary = stage.stageHeight - playerHalfHeight; 
+		    }
     
   }
   private inline function stage_click( e:MouseEvent ):Void
@@ -150,7 +151,9 @@ class SecretProject extends Sprite
 		clicked_x = e.stageX;
 		clicked_y = e.stageY;
 		
-/*    trace(clicked_x + " : " + clicked_y);*/
+		
+   // trace(clicked_x + " : " + clicked_y);
+    
 
 		// get mouse click grid coordinates
 		var clicked_grid_x = Math.floor(clicked_x/SP.grid_w);
